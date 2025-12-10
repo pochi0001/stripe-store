@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>決済完了</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: "Noto Sans JP", sans-serif;
+      background-color: #f6f6f6;
+      color: #111;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 40px 20px;
+      box-sizing: border-box;
+    }
+
+    main {
+      max-width: 500px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #fff;
+      padding: 30px 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1em;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .details {
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+      color: #444;
+    }
+
+    a.button {
+      display: inline-block;
+      text-decoration: none;
+      background-color: #222;
+      color: #fff;
+      padding: 12px 30px;
+      border-radius: 8px;
+      transition: 0.3s;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    a.button:hover {
+      background-color: #444;
+    }
+
+    footer {
+      background-color: #fff;
+      border-top: 1px solid #eee;
+      padding: 20px 10px;
+      text-align: center;
+      color: #555;
+      font-size: 14px;
+      width: 100%;
+    }
+
+    footer .shop-name {
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 6px;
+    }
+
+    footer .payment-methods {
+      color: #2b7a78;
+      font-weight: 600;
+      letter-spacing: 1px;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 20px 15px; }
+      main { padding: 20px 15px; margin-bottom: 20px; }
+      h1 { font-size: 1.8rem; }
+      p { font-size: 1rem; margin-bottom: 10px; }
+      .details { font-size: 0.95rem; margin-bottom: 20px; }
+      a.button { padding: 10px 20px; font-size: 0.95rem; }
+      footer { padding: 15px 10px; font-size: 0.85rem; }
+      footer .payment-methods { font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>決済が完了しました！</h1>
+    <p>ご購入ありがとうございます。</p>
+    <div class="details">
+      <div>商品名: <span id="product-name"></span></div>
+      <div>金額: ¥<span id="product-price"></span></div>
+    </div>
+    <a href="/" class="button">トップに戻る</a>
+  </main>
+
+  <footer>
+    <div class="shop-name">Mode Apparel</div>
+    <div class="payment-methods">Visa / Mastercard / JCB / PayPay</div>
+  </footer>
+
+  <script>
+    // URLパラメータから商品名と価格を取得
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get("name") || "不明";
+    const price = params.get("price") || "0";
+
+    document.getElementById("product-name").textContent = name;
+    document.getElementById("product-price").textContent = price;
+  </script>
+</body>
+</html>
