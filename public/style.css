@@ -19,9 +19,9 @@ h1 {
   letter-spacing: 2px;
 }
 
-/* ロゴ部分 */
+/* タイトルボックス（aulibe + FOR MF） */
 .title-box {
-  text-align: left;
+  text-align: center;
 }
 
 .tagline {
@@ -30,54 +30,71 @@ h1 {
   margin-top: 8px;
 }
 
-/* ───── ヘッダー全体を横並びにする ───── */
+/* ヘッダー全体 */
 .site-header {
+  width: 100%;
   background: #fff;
   border-bottom: 1px solid #eee;
-  padding: 20px 30px;
+  padding: 20px 0;
 }
 
-/* サイト名 */
+/* サイト名（aulibe） */
 .site-title {
   font-size: 32px;
   font-weight: bold;
   margin: 0;
   letter-spacing: 2px;
+  color: #111;
 }
 
-/* 会社名（タグライン） */
+/* サブタイトル（FOR MF） */
 .tagline {
-  font-size: 16px;
-  margin-top: 5px;
+  font-size: 14px;
   color: #666;
-  letter-spacing: 1.5px;
+  margin-top: 6px;
+  letter-spacing: 1.6px;
 }
 
+/* 中央揃えしつつ、右上にカートを置くレイアウト */
 .header-inner {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;   /* タイトルを中央に配置 */
   align-items: center;
+  position: relative;        /* カートを absolute で右上配置するため */
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
-/* ───── カートボタン（右上） ───── */
+/* カート（右上固定） */
+.cart-button {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .cart-button a {
-  background: #333;
-  color: #fff;
-  padding: 8px 16px;
-  border-radius: 6px;
   text-decoration: none;
   font-size: 14px;
+  color: #111;
+  font-weight: bold;
+  padding: 6px 12px;
+  border: 1px solid #111;
+  border-radius: 20px;
+  transition: 0.2s ease;
 }
 
 .cart-button a:hover {
-  background: #555;
+  background: #111;
+  color: #fff;
 }
 
-/* 下層メニュー */
+/* ------------------------------
+   下層メニュー（Legal / Corporate / Contact）
+-------------------------------- */
 .sub-nav {
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 .sub-nav-menu {
@@ -92,12 +109,12 @@ h1 {
   text-decoration: none;
   color: #333;
   font-size: 14px;
-  position: relative;
   padding-bottom: 3px;
+  position: relative;
   transition: 0.3s;
 }
 
-/* ホバーで下線アニメーション */
+/* ホバー時の黒ライン */
 .sub-nav-menu li a::after {
   content: "";
   position: absolute;
@@ -105,7 +122,7 @@ h1 {
   width: 0;
   left: 0;
   bottom: 0;
-  background: #333;
+  background: #111;
   transition: 0.3s;
 }
 
