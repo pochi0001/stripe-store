@@ -48,12 +48,15 @@ h1 {
 }
 
 /* カート */
-.cart-button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
+/* ヘッダーを横並びにする */
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative; /* これが重要 */
 }
 
+/* カートボタン */
 .cart-button a {
   background: #333;
   color: #fff;
