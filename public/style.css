@@ -66,6 +66,13 @@ h1 {
   padding: 0 20px;
 }
 
+.product-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
 /* カート（右上固定） */
 .cart-button {
   position: absolute;
