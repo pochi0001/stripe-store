@@ -5,6 +5,9 @@
   <title>Mode Apparel</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://js.stripe.com/v3/"></script>
+  <div class="cart-link">
+  <a href="checkout.html">カートを見る</a>
+</div>
 </head>
 <body>
   <header class="site-header">
@@ -20,6 +23,11 @@
       <li><a href="access.html" target="_blank">Contact</a></li>
     </ul>
   </nav>
+
+  <div class="cart-link">
+    <a href="checkout.html">🛒 カート (<span id="cart-count">0</span>)</a>
+  </div>
+
 </header>
 
   <main>
@@ -35,6 +43,9 @@
       </label><br>
       <label>住所：
         <input type="text" id="customer-address" required>
+      </label><br>
+      <label>メールアドレス（必須）：
+        <input type="email" id="customer-email" required>
       </label><br>
       <label>電話番号：
         <input type="text" id="customer-phone">
@@ -73,9 +84,10 @@
       const name = document.getElementById("customer-name").value.trim();
       const address = document.getElementById("customer-address").value.trim();
       const phone = document.getElementById("customer-phone").value.trim();
+      const email = document.getElementById("customer-email").value.trim();
 
-      if (!name || !address || !phone) {
-        alert("名前・住所・電話番号をすべて入力してください");
+      if (!name || !address || !phone || !email) {
+        alert("名前・住所・電話番号・メールアドレスをすべて入力してください");
         return false;
       }
 
@@ -83,98 +95,139 @@
         alert("電話番号が正しくありません（10〜11桁の数字、ハイフン可）");
         return false;
       }
+      // email の形式チェック
+      if (!email.match(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/)) {
+        alert("メールアドレスの形式が不正です");
+        return false;
+      }
 
-      return { name, address, phone };
+      return { name, address, phone, email }; // ← email を返す
     }
-
 
     // 商品一覧を読み込む
     async function loadProducts() {
       const res = await fetch("/products");
       const products = await res.json();
+
       const list = document.getElementById("product-list");
       list.innerHTML = "";
 
       products.forEach(p => {
-        const disabled = p.stock <= 0 ? "disabled" : "";
-        const stockText = p.stock <= 0 ? "在庫なし" : `在庫：${p.stock}`;
-
         list.innerHTML += `
           <div class="product-card">
-            <img src="/images/IMG_2.jpeg" class="product-img" />
-            <h2>${p.name}</h2>
-            <p>${stockText}</p>
-            <p class="price">¥${p.price}</p>
-
-            <button class="stripe-btn" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}" ${disabled}>
-              ${p.stock <= 0 ? "在庫なし" : "カードで支払う"}
-            </button>
-
-            <button class="paypay-btn" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}" ${disabled}>
-              ${p.stock <= 0 ? "在庫なし" : "PayPayで支払う"}
+            <img src="img/${p.id}.jpg" class="product-img">
+            <h3>${p.name}</h3>
+            <p>¥${p.price.toLocaleString()}</p>
+            <button class="add-cart-btn"
+              data-id="${p.id}"
+              data-name="${p.name}"
+              data-price="${p.price}">
+              カートに入れる
             </button>
           </div>
         `;
       });
 
-      attachBuyEvents(); // ボタンイベント設定
+      // ⚡重要：商品が描画された後でイベントを設定！
+      attachBuyEvents();
     }
 
-    // ボタンイベント設定
+    // カートの個数を更新
+    function loadCartCount() {
+          const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+          const count = cart.reduce((sum, item) => sum + item.qty, 0);
+          const el = document.getElementById("cart-count");
+          if (el) el.textContent = count;
+        }
+    updateCartCount();
+    
+
+    // 商品一覧を読み込む
     function attachBuyEvents() {
-      // Stripeボタン
-      document.querySelectorAll(".stripe-btn").forEach(btn => {
+
+    // カートに追加
+    document.querySelectorAll(".add-cart-btn").forEach(btn => {
+      btn.onclick = () => {
+        addToCart({
+          id: Number(btn.dataset.id),
+          name: btn.dataset.name,
+          price: Number(btn.dataset.price)
+        });
+      };
+    });
+
+    // Stripeボタン
+    document.querySelectorAll(".stripe-btn").forEach(btn => {
       btn.onclick = () => {
         const customer = validateCustomerInfo();
-        if (!customer) return; // 入力不正なら処理停止
+        if (!customer) return;
 
         selectedProduct = {
           name: btn.dataset.name,
           price: parseInt(btn.dataset.price),
-          customer // 後で送信
+          customer
         };
         modal.style.display = "block";
       };
     });
 
-      // PayPayボタン
+    // PayPayボタン
     document.querySelectorAll(".paypay-btn").forEach(btn => {
-  btn.onclick = async () => {
-    const customer = validateCustomerInfo();
-    if (!customer) return; // 入力不正なら処理停止
+      btn.onclick = async () => {
+        const customer = validateCustomerInfo();
+        if (!customer) return;
 
-    const amount = parseInt(btn.dataset.price) * 100;
+        const amount = parseInt(btn.dataset.price) * 100;
 
-    const res = await fetch("/paypay-payment", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        amount: amount,
-        description: btn.dataset.name,
-        name: customer.name,
-        address: customer.address,
-        phone: customer.phone
-      }),
+        const res = await fetch("/paypay-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: amount,
+            description: btn.dataset.name,
+            name: customer.name,
+            address: customer.address,
+            phone: customer.phone,
+            email: customer.email
+          }),
+        });
+
+        const data = await res.json();
+        if (data.status === "success") {
+          alert(`PayPay決済完了！金額: ¥${parseInt(btn.dataset.price)}`);
+          window.location.href = "/success.html";
+        } else {
+          alert("PayPay決済失敗：" + (data.message || ""));
+        }
+      };
     });
 
-    const data = await res.json();
-    if (data.status === "success") {
-      alert(`PayPay決済完了！金額: ¥${parseInt(btn.dataset.price)}`);
-      window.location.href = "/success.html";
-    } else {
-      alert("PayPay決済失敗：" + (data.message || ""));
-    }
-  };
-});
+    // 画像クリックで拡大
+    document.querySelectorAll(".product-img").forEach(img => {
+      img.onclick = () => {
+        modalImg.src = img.src;
+        imgModal.style.display = "block";
+      };
+    });
+  }
 
-      // 画像クリックで拡大
-      document.querySelectorAll(".product-img").forEach(img => {
-        img.onclick = () => {
-          modalImg.src = img.src;
-          imgModal.style.display = "block";
-        };
-      });
+
+    // カート機能
+    function addToCart(product) {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+      const exist = cart.find(item => item.id === product.id);
+      if (exist) {
+        exist.qty += 1;
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartCount(); // ← 追加
+      alert("カートに追加しました！");
     }
+    
 
     // ---------------- Stripe設定 ----------------
     const stripe = Stripe("pk_test_51SQTLLRytEfLIwOYuSDMMX63MpF0xZYUGwzpFC13lHufZlVubPhhmQr3QbWMVsLoR8iOgn2m0ftK129AYnRP48o200RqBen43R"); // 自分の公開キー
@@ -210,7 +263,8 @@
       description: selectedProduct.name,
       name: customer.name,
       address: customer.address,
-      phone: customer.phone
+      phone: customer.phone,
+      email: customer.email
     }),
     });
     const { clientSecret } = await res.json();

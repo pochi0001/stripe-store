@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>購入手続き | aulibe</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="title-box">
+    <h1 class="site-title">aulibe</h1>
+    <p class="tagline">FOR MF</p>
+  </div>
+</header>
+
+<main>
+  <h2>購入手続き</h2>
+
+  <!-- カート内容 -->
+  <div id="cart-list"></div>
+  <h3 id="total-price">合計: ¥0</h3>
+
+  <!-- お届け先情報 -->
+  <h3>お届け先情報</h3>
+  <div id="customer-info">
+    <label>名前：
+      <input type="text" id="customer-name" required>
+    </label><br>
+    <label>住所：
+      <input type="text" id="customer-address" required>
+    </label><br>
+    <label>電話番号：
+      <input type="text" id="customer-phone" required>
+    </label>
+  </div>
+
+  <!-- ボタン類 -->
+  <div class="pay-buttons">
+    <button id="stripe-open">カードで支払う</button>
+    <button id="paypay-pay">PayPayで支払う</button>
+  </div>
+
+</main>
+
+<!-- Stripe モーダル -->
+<div id="stripe-modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>カード情報を入力</h2>
+    <div id="card-element"></div>
+    <button id="confirm-payment">支払う</button>
+    <p id="stripe-message"></p>
+  </div>
+</div>
+
+<script>
+  let totalAmount = 0;
+  const stripe = Stripe("pk_test_51SQTLLRytEfLIwOYuSDMMX63MpF0xZYUGwzpFC13lHufZlVubPhhmQr3QbWMVsLoR8iOgn2m0ftK129AYnRP48o200RqBen43R");
+  const elements = stripe.elements();
+  const cardElement = elements.create("card");
+  cardElement.mount("#card-element");
+
+  const modal = document.getElementById("stripe-modal");
+  const closeModal = document.querySelector(".close");
+
+  closeModal.onclick = () => (modal.style.display = "none");
+  window.onclick = (e) => { if (e.target == modal) modal.style.display = "none" };
+
+  function loadCart() {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const list = document.getElementById("cart-list");
+
+    if (cart.length === 0) {
+      list.innerHTML = "<p>カートは空です。</p>";
+      return;
+    }
+
+    let html = "";
+    totalAmount = 0;
+
+    cart.forEach(item => {
+      totalAmount += item.price * item.qty;
+      html += `
+        <div class="cart-row">
+          <img src="img/${item.id}.jpg" class="cart-img">
+          <div>
+            <h4>${item.name}</h4>
+            <p>¥${item.price.toLocaleString()} × ${item.qty}</p>
+          </div>
+        </div>
+      `;
+    });
+
+    list.innerHTML = html;
+    document.getElementById("total-price").textContent =
+      "合計: ¥" + totalAmount.toLocaleString();
+  }
+
+  function validateCustomer() {
+    const name = document.getElementById("customer-name").value.trim();
+    const address = document.getElementById("customer-address").value.trim();
+    const phone = document.getElementById("customer-phone").value.trim();
+
+    if (!name || !address || !phone) {
+      alert("名前・住所・電話番号は必須です");
+      return false;
+    }
+
+    const numbers = phone.replace(/-/g, "");
+    if (!/^\d{10,11}$/.test(numbers)) {
+      alert("電話番号は10〜11桁の数字（ハイフン可）で入力してください");
+      return false;
+    }
+
+    return { name, address, phone };
+  }
+
+  // Stripe モーダルを開く
+  document.getElementById("stripe-open").onclick = () => {
+    if (!validateCustomer()) return;
+    modal.style.display = "block";
+  };
+
+  // Stripe 支払い
+  document.getElementById("confirm-payment").onclick = async () => {
+    const customer = validateCustomer();
+    if (!customer) return;
+
+    const res = await fetch("/create-payment-intent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amount: totalAmount * 100,
+        description: "Cart Purchase",
+        ...customer
+      }),
+    });
+
+    const { clientSecret } = await res.json();
+    const result = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: { card: cardElement },
+    });
+
+    if (result.error) {
+      document.getElementById("stripe-message").textContent =
+        "決済失敗：" + result.error.message;
+    } else if (result.paymentIntent.status === "succeeded") {
+      localStorage.removeItem("cart");
+      window.location.href = "/success.html";
+    }
+  };
+
+  // PayPay 支払い
+  document.getElementById("paypay-pay").onclick = async () => {
+    const customer = validateCustomer();
+    if (!customer) return;
+
+    const res = await fetch("/paypay-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amount: totalAmount * 100,
+        description: "Cart Purchase",
+        ...customer
+      }),
+    });
+
+    const data = await res.json();
+    if (data.status === "success") {
+      localStorage.removeItem("cart");
+      window.location.href = "/success.html";
+    } else {
+      alert("PayPay決済エラー：" + data.message);
+    }
+  };
+
+  loadCart();
+</script>
+
+</body>
+</html>

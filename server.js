@@ -20,7 +20,7 @@ const dbPromise = open({
 (async () => {
   const db = await dbPromise;
   await db.exec(`
-  CREATE TABLE IF NOT EXISTS payments (
+    CREATE TABLE IF NOT EXISTS payments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     amount INTEGER,
     description TEXT,
@@ -28,7 +28,8 @@ const dbPromise = open({
     method TEXT,
     name TEXT,
     address TEXT,
-    phone TEXT
+    phone TEXT,
+    email TEXT
   );
 `);
 
@@ -111,7 +112,8 @@ app.post("/create-payment-intent", async (req, res) => {
       metadata: {
         name: req.body.name,
         address: req.body.address,
-        phone: req.body.phone
+        phone: req.body.phone,
+        email: req.body.email
       },
       automatic_payment_methods: { enabled: true },
     });
@@ -177,7 +179,7 @@ app.post(
 
       // DB保存
       await db.run(
-  "INSERT INTO payments (amount, description, created_at, method, name, address, phone) VALUES (?, ?, ?, ?, ?, ?, ?)",
+  "INSERT INTO payments (amount, description, created_at, method, name, address, phone, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
   [
     paymentIntent.amount,
     paymentIntent.description,
@@ -186,6 +188,7 @@ app.post(
     paymentIntent.metadata?.name || "",
     paymentIntent.metadata?.address || "",
     paymentIntent.metadata?.phone || "",
+    paymentIntent.metadata?.email || "",
   ]
 );
     }
@@ -212,8 +215,17 @@ app.post("/paypay-payment", async (req, res) => {
   }
 
   await db.run(
-  "INSERT INTO payments (amount, description, created_at, method, name, address, phone) VALUES (?, ?, ?, ?, ?, ?, ?)",
-  [amount, description, new Date().toISOString(), "PayPay", req.body.name, req.body.address, req.body.phone]
+  "INSERT INTO payments (amount, description, created_at, method, name, address, phone, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+  [
+    amount,
+    description,
+    new Date().toISOString(),
+    "PayPay",
+    req.body.name,
+    req.body.address,
+    req.body.phone,
+    req.body.email
+  ]
 );
 
   await transporter.sendMail({
@@ -265,6 +277,7 @@ app.get("/admin", async (req, res) => {
         <th>名前</th>
         <th>住所</th>
         <th>電話番号</th>
+        <th>メール</th>
         <th>日時</th>
         <th>方法</th>
       </tr>
@@ -274,11 +287,12 @@ app.get("/admin", async (req, res) => {
     html += `
       <tr>
         <td>${p.id}</td>
-        <td>¥${p.amount / 100}</td>
+        <td>¥${p.amount / 1}</td>
         <td>${p.description}</td>
         <td>${p.name || ""}</td>
         <td>${p.address || ""}</td>
         <td>${p.phone || ""}</td>
+        <td>${p.email || ""}</td>
         <td>${new Date(p.created_at).toLocaleString("ja-JP")}</td>
         <td>${p.method}</td>
       </tr>

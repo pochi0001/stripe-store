@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ショッピングカート | aulibe</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="title-box">
+      <h1 class="site-title">aulibe</h1>
+      <p class="tagline">FOR MF</p>
+    </div>
+  </header>
+
+  <main>
+    <h2>ショッピングカート</h2>
+
+    <div id="cart-items"></div>
+
+    <h3 id="total-price">合計: ¥0</h3>
+
+    <button id="checkout-btn">購入手続きへ進む</button>
+  </main>
+
+  <script>
+    function loadCart() {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const container = document.getElementById("cart-items");
+
+      if (cart.length === 0) {
+        container.innerHTML = "<p>カートは空です。</p>";
+        document.getElementById("checkout-btn").style.display = "none";
+        return;
+      }
+
+      let html = "";
+      let total = 0;
+
+      cart.forEach(item => {
+        total += item.price * item.qty;
+
+        html += `
+          <div class="cart-row">
+            <img src="img/${item.id}.jpg" class="cart-img">
+            <div class="cart-info">
+              <h4>${item.name}</h4>
+              <p>¥${item.price.toLocaleString()}</p>
+              <div class="qty-box">
+                <button onclick="changeQty(${item.id}, -1)">−</button>
+                <span>${item.qty}</span>
+                <button onclick="changeQty(${item.id}, 1)">＋</button>
+              </div>
+              <button class="delete-btn" onclick="removeItem(${item.id})">削除</button>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+      document.getElementById("total-price").textContent =
+        `合計: ¥${total.toLocaleString()}`;
+    }
+
+    // 数量変更
+    function changeQty(id, delta) {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const item = cart.find(p => p.id === id);
+
+      if (!item) return;
+
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(p => p.id !== id);
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    // 削除
+    function removeItem(id) {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cart = cart.filter(item => item.id !== id);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    // 購入ボタン
+    document.getElementById("checkout-btn").onclick = () => {
+      window.location.href = "/checkout.html";
+    };
+
+    loadCart();
+  </script>
+
+</body>
+</html>
