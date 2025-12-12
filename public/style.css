@@ -19,22 +19,28 @@ h1 {
   letter-spacing: 2px;
 }
 
+/* ロゴ部分 */
+.title-box {
+  text-align: left;
+}
+
 .tagline {
   font-size: 0.9rem;
   color: #666;
   margin-top: 8px;
 }
 
-/* ヘッダー全体 */
+/* ───── ヘッダー全体を横並びにする ───── */
 .site-header {
-  text-align: center;
-  padding: 60px 20px 40px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  padding: 20px 30px;
 }
 
 /* サイト名 */
 .site-title {
-  font-size: 48px;
-  font-weight: 700;
+  font-size: 32px;
+  font-weight: bold;
   margin: 0;
   letter-spacing: 2px;
 }
@@ -47,20 +53,19 @@ h1 {
   letter-spacing: 1.5px;
 }
 
-/* カート */
-/* ヘッダーを横並びにする */
 .header-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative; /* これが重要 */
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* カートボタン */
+/* ───── カートボタン（右上） ───── */
 .cart-button a {
   background: #333;
   color: #fff;
-  padding: 8px 14px;
+  padding: 8px 16px;
   border-radius: 6px;
   text-decoration: none;
   font-size: 14px;

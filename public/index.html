@@ -5,33 +5,32 @@
   <title>Mode Apparel</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://js.stripe.com/v3/"></script>
-  <div class="cart-link">
-  <a href="checkout.html">カートを見る</a>
-</div>
 </head>
+
 <body>
   <header class="site-header">
-  <div class="header-inner">
+    <div class="header-inner">
 
-    <div class="title-box">
-      <h1 class="site-title">aulibe</h1>
-      <p class="tagline">FOR MF</p>
+      <div class="title-box">
+        <h1 class="site-title">aulibe</h1>
+        <p class="tagline">FOR MF</p>
+      </div>
+
+      <!-- ✔ ヘッダー右上カートボタン -->
+      <div class="cart-button">
+        <a href="checkout.html">カート (<span id="cart-count">0</span>)</a>
+      </div>
+
     </div>
 
-    <div class="cart-button">
-      <a href="checkout.html">カート (<span id="cart-count">0</span>)</a>
-    </div>
-
-  </div>
-
-  <nav class="sub-nav">
-    <ul class="sub-nav-menu">
-      <li><a href="tokusho.html" target="_blank">Legal Info</a></li>
-      <li><a href="corporate.html" target="_blank">Corporate</a></li>
-      <li><a href="access.html" target="_blank">Contact</a></li>
-    </ul>
-  </nav>
-</header>
+    <nav class="sub-nav">
+      <ul class="sub-nav-menu">
+        <li><a href="tokusho.html" target="_blank">Legal Info</a></li>
+        <li><a href="corporate.html" target="_blank">Corporate</a></li>
+        <li><a href="access.html" target="_blank">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
 
   <main>
     <section class="products" id="product-list">
@@ -142,7 +141,7 @@
           const el = document.getElementById("cart-count");
           if (el) el.textContent = count;
         }
-    updateCartCount();
+    loadCartCount();
     
 
     // 商品一覧を読み込む
