@@ -43,9 +43,26 @@ await db.exec(`
 
   const existing = await db.get("SELECT COUNT(*) AS count FROM products");
   if (existing.count === 0) {
+    await db.exec("DELETE FROM products");
+
     await db.run(`
       INSERT INTO products (name, price, stock) VALUES
       ('Trainer free size', 8500, 9)
+    `);
+
+    await db.run(`
+      INSERT INTO products (name, price, stock) VALUES
+      ('Sticker 1枚セット', 700, 50)
+    `);
+
+    await db.run(`
+      INSERT INTO products (name, price, stock) VALUES
+      ('Sticker 5枚セット', 3000, 10)
+    `);
+
+    await db.run(`
+      INSERT INTO products (name, price, stock) VALUES
+      ('Sticker 10枚セット', 5000, 5)
     `);
   }
 })();
