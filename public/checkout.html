@@ -67,12 +67,9 @@
 </div>
 
 <script>
-let totalAmount = 0;
-
 function loadCart() {
   const cart = JSON.parse(localStorage.getItem("cart") || "[]");
   const list = document.getElementById("cart-list");
-  totalAmount = 0;
 
   if (cart.length === 0) {
     list.innerHTML = "<p>カートは空です。</p>";
@@ -80,58 +77,37 @@ function loadCart() {
     return;
   }
 
-  list.innerHTML = "";
+  // 🚫 念のため：2個以上入ってたら1個に強制
+  const item = cart[0];
+  item.qty = 1;
+  localStorage.setItem("cart", JSON.stringify([item]));
 
-  cart.forEach((item, index) => {
-    totalAmount += item.price * item.qty;
+  list.innerHTML = `
+    <div class="cart-item">
+      <img src="img/${item.id}.jpg" class="cart-img">
+      <div class="cart-info">
+        <h4>${item.name}</h4>
+        <p>¥${item.price.toLocaleString()}</p>
 
-    list.innerHTML += `
-      <div class="cart-item">
-        <img src="img/${item.id}.jpg" class="cart-img">
-        <div class="cart-info">
-          <h4>${item.name}</h4>
-          <p>¥${item.price.toLocaleString()}</p>
+        <p class="qty-fixed">数量：1（固定）</p>
 
-          <div class="qty-control">
-            <button onclick="changeQty(${index}, -1)">−</button>
-            <span>${item.qty}</span>
-            <button onclick="changeQty(${index}, 1)">＋</button>
-          </div>
-
-          <button class="remove-btn" onclick="removeItem(${index})">
-            削除
-          </button>
-        </div>
+        <button class="remove-btn" onclick="removeItem()">
+          カートから削除
+        </button>
       </div>
-    `;
-  });
+    </div>
+  `;
 
   document.getElementById("total-price").textContent =
-    "¥" + totalAmount.toLocaleString();
-}
-
-// 数量変更
-function changeQty(index, delta) {
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  cart[index].qty += delta;
-
-  if (cart[index].qty <= 0) {
-    cart.splice(index, 1);
-  }
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-  loadCart();
+    "¥" + item.price.toLocaleString();
 }
 
 // 削除
-function removeItem(index) {
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  cart.splice(index, 1);
-  localStorage.setItem("cart", JSON.stringify(cart));
+function removeItem() {
+  localStorage.removeItem("cart");
   loadCart();
 }
 
-// ページ読み込み時に実行
 document.addEventListener("DOMContentLoaded", loadCart);
 </script>
 

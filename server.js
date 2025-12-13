@@ -9,6 +9,7 @@ import bodyParser from "body-parser";
 dotenv.config();
 console.log("Stripe Secret Key:", process.env.STRIPE_SECRET_KEY);
 
+
 // -------------------------------
 // ✅ SQLite データベース設定
 // -------------------------------
@@ -16,6 +17,15 @@ const dbPromise = open({
   filename: "./database.db",
   driver: sqlite3.Database,
 });
+
+async function isEmailAlreadyPurchased(email) {
+  const db = await dbPromise;
+  const result = await db.get(
+    "SELECT COUNT(*) AS count FROM payments WHERE email = ?",
+    [email]
+  );
+  return result.count > 0;
+}
 
 (async () => {
   const db = await dbPromise;
@@ -105,6 +115,14 @@ app.get("/products", async (req, res) => {
 // -------------------------------
 app.post("/create-payment-intent", async (req, res) => {
   try {
+    const { email } = req.body;
+
+    if (await isEmailAlreadyPurchased(email)) {
+      return res.status(400).json({
+        error: "このメールアドレスでは既に購入されています"
+      });
+    }
+
     const paymentIntent = await stripe.paymentIntents.create({
       amount: req.body.amount,
       currency: "jpy",
@@ -201,8 +219,15 @@ app.post(
 // ✅ PayPay決済成功処理（メール + DB登録 + 在庫減少）
 // -------------------------------
 app.post("/paypay-payment", async (req, res) => {
-  const { amount, description } = req.body;
+  const { amount, description,email } = req.body;
   const db = await dbPromise;
+
+  if (await isEmailAlreadyPurchased(email)) {
+    return res.json({
+      status: "fail",
+      message: "このメールアドレスでは既に購入されています"
+    });
+  }
 
   const result = await db.run(
     "UPDATE products SET stock = stock - 1 WHERE name = ? AND stock > 0",
