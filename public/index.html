@@ -86,24 +86,25 @@
     function attachBuyEvents() {
 
     // カートに追加
-    document.querySelectorAll(".add-cart-btn").forEach(btn => {
-      btn.onclick = () => {
-        addToCart({
-          id: Number(btn.dataset.id),
-          name: btn.dataset.name,
-          price: Number(btn.dataset.price)
-        });
-      };
-    });
+  document.querySelectorAll(".add-cart-btn").forEach(btn => {
+    btn.onclick = () => {
+      addToCart({
+        id: Number(btn.dataset.id),
+        name: btn.dataset.name,
+        price: Number(btn.dataset.price)
+      });
+    };
+  });
 
-        const data = await res.json();
-        if (data.status === "success") {
-          alert(`PayPay決済完了！金額: ¥${parseInt(btn.dataset.price)}`);
-          window.location.href = "/success.html";
-        } else {
-          alert("PayPay決済失敗：" + (data.message || ""));
-        }
-      };
+  // 画像クリックで拡大
+  document.querySelectorAll(".product-img").forEach(img => {
+    img.onclick = () => {
+      modalImg.src = img.src;
+      imgModal.style.display = "block";
+    };
+  });
+
+} // ← この1個だけでOK
 
     // 画像クリックで拡大
     document.querySelectorAll(".product-img").forEach(img => {
@@ -112,7 +113,7 @@
         imgModal.style.display = "block";
       };
     });
-  }
+  
 
 
     // カート機能
