@@ -53,17 +53,17 @@ await db.exec(`
 
     await db.run(`
       INSERT INTO products (name, price, stock) VALUES
-      ('Sticker 1枚セット', 700, 50)
+      ('Random Sticker 1枚セット', 700, 50)
     `);
 
     await db.run(`
       INSERT INTO products (name, price, stock) VALUES
-      ('Sticker 5枚セット', 3000, 10)
+      ('Random Stickers 5枚セット', 3000, 10)
     `);
 
     await db.run(`
       INSERT INTO products (name, price, stock) VALUES
-      ('Sticker 10枚セット', 5000, 5)
+      ('Random Stickers 10枚セット', 5000, 5)
     `);
   }
 })();
