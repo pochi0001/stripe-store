@@ -97,6 +97,71 @@ h1 {
   color: #fff;
 }
 
+/* カートページ */
+.cart-page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.cart-item {
+  display: flex;
+  gap: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.cart-img {
+  width: 120px;
+  object-fit: cover;
+}
+
+.cart-info h4 {
+  margin: 0;
+}
+
+.qty-control {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.qty-control button {
+  width: 30px;
+  height: 30px;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: #c00;
+  cursor: pointer;
+}
+
+.cart-summary {
+  margin: 20px 0;
+  font-size: 18px;
+}
+
+.customer-form {
+  display: grid;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.customer-form input {
+  width: 100%;
+  padding: 8px;
+}
+
+.pay-buttons {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+
 /* ------------------------------
    下層メニュー（Legal / Corporate / Contact）
 -------------------------------- */
