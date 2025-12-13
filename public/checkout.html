@@ -70,6 +70,7 @@
 function loadCart() {
   const cart = JSON.parse(localStorage.getItem("cart") || "[]");
   const list = document.getElementById("cart-list");
+  let total = 0;
 
   if (cart.length === 0) {
     list.innerHTML = "<p>カートは空です。</p>";
@@ -77,34 +78,37 @@ function loadCart() {
     return;
   }
 
-  // 🚫 念のため：2個以上入ってたら1個に強制
-  const item = cart[0];
-  item.qty = 1;
-  localStorage.setItem("cart", JSON.stringify([item]));
+  list.innerHTML = "";
 
-  list.innerHTML = `
-    <div class="cart-item">
-      <img src="img/${item.id}.jpg" class="cart-img">
-      <div class="cart-info">
-        <h4>${item.name}</h4>
-        <p>¥${item.price.toLocaleString()}</p>
+  cart.forEach((item, index) => {
+    total += item.price;
 
-        <p class="qty-fixed">数量：1（固定）</p>
+    list.innerHTML += `
+      <div class="cart-item">
+        <img src="img/${item.id}.jpg" class="cart-img">
+        <div class="cart-info">
+          <h4>${item.name}</h4>
+          <p>¥${item.price.toLocaleString()}</p>
 
-        <button class="remove-btn" onclick="removeItem()">
-          カートから削除
-        </button>
+          <p class="qty-fixed">数量：1（固定）</p>
+
+          <button class="remove-btn" onclick="removeItem(${index})">
+            カートから削除
+          </button>
+        </div>
       </div>
-    </div>
-  `;
+    `;
+  });
 
   document.getElementById("total-price").textContent =
-    "¥" + item.price.toLocaleString();
+    "¥" + total.toLocaleString();
 }
 
-// 削除
-function removeItem() {
-  localStorage.removeItem("cart");
+// 削除（1商品だけ消す）
+function removeItem(index) {
+  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+  cart.splice(index, 1);
+  localStorage.setItem("cart", JSON.stringify(cart));
   loadCart();
 }
 
