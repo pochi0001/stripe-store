@@ -502,6 +502,37 @@ footer .payment-logos img {
   }
 }
 
+/* 下層ページ */
+/* ===== 法表記・運営者・お問い合わせ 共通 ===== */
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+/* corporate / access 用 */
+p {
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+/* tokusho 用（既存対応） */
+dt {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+dd {
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
 /* タブレット：601px〜900px */
 @media (min-width: 601px) and (max-width: 900px) {
   .modal-content {
