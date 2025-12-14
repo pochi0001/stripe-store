@@ -558,9 +558,9 @@ footer .payment-logos img {
 /* ===== 法表記・運営者・お問い合わせ 共通 ===== */
 
 /* 下層ページ専用 */
-.page-legal body,
-.page-corporate body,
-.page-access body {
+body.page-legal,
+body.page-corporate,
+body.page-access {
   font-family: Arial, sans-serif;
   line-height: 1.6;
   padding: 20px;
