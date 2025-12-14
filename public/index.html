@@ -58,7 +58,7 @@
             <img src="img/${p.id}.jpg" class="product-img">
             <h3>${p.name}</h3>
             <p>¥${p.price.toLocaleString()}</p>
-            <button class="add-cart-btn"
+            <button class="add-to-cart"
               data-id="${p.id}"
               data-name="${p.name}"
               data-price="${p.price}">
@@ -86,7 +86,7 @@
     function attachBuyEvents() {
 
     // カートに追加
-  document.querySelectorAll(".add-cart-btn").forEach(btn => {
+  document.querySelectorAll(".add-to-cart").forEach(btn => {
     btn.onclick = () => {
       addToCart({
         id: Number(btn.dataset.id),
@@ -105,17 +105,7 @@
   });
 
 } // ← この1個だけでOK
-
-    // 画像クリックで拡大
-    document.querySelectorAll(".product-img").forEach(img => {
-      img.onclick = () => {
-        modalImg.src = img.src;
-        imgModal.style.display = "block";
-      };
-    });
   
-
-
     // カート機能
     function addToCart(product) {
       let cart = JSON.parse(localStorage.getItem("cart") || "[]");
