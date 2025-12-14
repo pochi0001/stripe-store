@@ -269,6 +269,32 @@ h1 {
   border-left: none !important;
 }
 
+/* カートに入れるボタン専用 */
+.add-to-cart {
+  transition: all 0.15s ease;
+}
+
+/* ボタンにマウスを乗せた時 */
+.add-to-cart:hover {
+  background-color: #222;
+  transform: scale(1.05);
+}
+
+/* クリック中（押してる瞬間） */
+.add-to-cart:active {
+  transform: scale(0.95);
+  background-color: #000;
+}
+
+.add-to-cart {
+  box-shadow: 0 4px 0 #111;
+}
+
+.add-to-cart:active {
+  box-shadow: 0 1px 0 #111;
+  transform: translateY(3px);
+}
+
 h2 {
   margin: 16px;
   font-size: 1.3rem;
