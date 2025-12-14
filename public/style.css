@@ -304,7 +304,6 @@ h1 {
   cursor: pointer;
   font-weight: bold;
 
-  box-shadow: 0 4px 0 #111;
   transition:
     background-color 0.2s ease,
     transform 0.1s ease,
