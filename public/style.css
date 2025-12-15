@@ -144,17 +144,6 @@ h1 {
   font-size: 18px;
 }
 
-.customer-form {
-  display: grid;
-  gap: 15px;
-  margin: 20px 0;
-}
-
-.customer-form input {
-  width: 70%;
-  padding: 8px;
-}
-
 .pay-buttons {
   display: flex;
   gap: 20px;
@@ -204,38 +193,47 @@ h1 {
 
 .products {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 30px;
-  padding: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 24px;
+  padding: 32px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 /* ---------- 購入者情報フォーム ---------- */
 #customer-info {
-  max-width: 500px;       /* 横幅の上限 */
-  margin: 20px auto;      /* 上下20px、左右中央寄せ */
-  padding: 20px;           /* 内側余白 */
-  border: 1px solid #ccc;  /* 枠線 */
-  border-radius: 8px;      /* 角丸 */
-  background-color: #f9f9f9; /* 背景色 */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 軽い影 */
+  max-width: 520px;
+  margin: 40px auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
 /* ラベルと入力欄 */
 #customer-info label {
   display: block;
-  margin-bottom: 10px;
-  font-weight: bold;
+  font-size: 14px;
+  margin-top: 18px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
 }
 
-#customer-info input[type="text"] {
+#customer-info input {
   width: 100%;
-  padding: 8px 10px;
-  margin-top: 4px;
+  padding: 12px 14px;
+  font-size: 15px;
+  border-radius: 8px;
   border: 1px solid #ccc;
-  border-radius: 4px;
   box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#customer-info input:focus {
+  outline: none;
+  border-color: #111;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
 }
 
 /* 小さい画面でも横幅を広げすぎない */
@@ -254,9 +252,10 @@ h1 {
   transition: transform 0.2s ease;
   padding-bottom: 20px;
 }
-/* .product-card:hover {
-  transform: translateY(-4px);
-} */
+
+.product-card p {
+  margin: 0 16px 8px;
+}
 
 .product-img {
   width: 100%;
@@ -269,32 +268,7 @@ h1 {
   border-left: none !important;
 }
 
-/* カートに入れるボタン専用 */
-.add-to-cart {
-  transition: all 0.15s ease;
-}
-
-/* ボタンにマウスを乗せた時 */
-.add-to-cart:hover {
-  background-color: #222;
-  transform: scale(1.05);
-}
-
-/* クリック中（押してる瞬間） */
-.add-to-cart:active {
-  transform: scale(0.95);
-  background-color: #000;
-}
-
-.add-to-cart {
-  box-shadow: 0 4px 0 #111;
-}
-
-.add-to-cart:active {
-  box-shadow: 0 1px 0 #111;
-  transform: translateY(3px);
-}
-
+/* カートに追加 */
 .add-to-cart {
   background-color: #222;
   color: #fff;
@@ -303,31 +277,24 @@ h1 {
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
-
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease,
-    box-shadow 0.1s ease;
+  box-shadow: 0 4px 0 #111;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 .add-to-cart:hover {
-  background-color: #222;
+  background-color: #333;
   transform: translateY(-2px);
 }
 
 .add-to-cart:active {
   background-color: #000;
-  transform: translateY(1px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #111;
 }
 
 h2 {
   margin: 16px;
   font-size: 1.3rem;
-}
-
-p {
-  margin: 0 16px 8px;
 }
 
 .price {
@@ -590,13 +557,15 @@ body.page-access {
   padding: 20px;
 }
 
-h1 {
+body.page-legal h1,
+body.page-corporate h1,
+body.page-access h1 {
   font-size: 24px;
   margin-bottom: 10px;
 }
 
-/* corporate / access 用 */
-p {
+body.page-corporate p,
+body.page-access p {
   margin-left: 20px;
   margin-bottom: 10px;
 }
