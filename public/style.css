@@ -204,9 +204,9 @@ h1 {
 
 .products {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 40px;
-  padding: 60px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+  padding: 40px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -260,7 +260,7 @@ h1 {
 
 .product-img {
   width: 100%;
-  height: 400px;
+  height: 260px;
   object-fit: cover;
   border: none;
 }
