@@ -151,7 +151,7 @@ h1 {
 }
 
 .customer-form input {
-  width: 100%;
+  width: 70%;
   padding: 8px;
 }
 
@@ -552,6 +552,30 @@ footer .payment-logos img {
   .small-note {
     font-size: 0.7rem;
   }
+}
+
+/* 買い物を続けるボタン */
+.continue-shopping {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 24px;
+  background-color: #222;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* hover時 */
+.continue-shopping:hover {
+  background-color: #444;
+}
+
+/* クリック時（押してる感） */
+.continue-shopping:active {
+  transform: scale(0.96);
 }
 
 /* 下層ページ */
